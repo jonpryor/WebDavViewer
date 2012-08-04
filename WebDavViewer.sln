@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDavViewer", "WebDavViewer\WebDavViewer.csproj", "{17FD198B-F9CA-460F-AD1B-7C8D9A73B966}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDavViewer", "src\WebDavViewer\WebDavViewer.csproj", "{17FD198B-F9CA-460F-AD1B-7C8D9A73B966}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDAVClient", "Externals\WebDavClient\src\WebDavClient\WebDAVClient.csproj", "{F21EB154-C84E-4390-87CF-271E3DF4F059}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,8 +27,20 @@ Global
 		{17FD198B-F9CA-460F-AD1B-7C8D9A73B966}.Release|iPhone.Build.0 = Release|iPhone
 		{17FD198B-F9CA-460F-AD1B-7C8D9A73B966}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
 		{17FD198B-F9CA-460F-AD1B-7C8D9A73B966}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{F21EB154-C84E-4390-87CF-271E3DF4F059}.Ad-Hoc|iPhone.ActiveCfg = Debug|Any CPU
+		{F21EB154-C84E-4390-87CF-271E3DF4F059}.Ad-Hoc|iPhone.Build.0 = Debug|Any CPU
+		{F21EB154-C84E-4390-87CF-271E3DF4F059}.AppStore|iPhone.ActiveCfg = Debug|Any CPU
+		{F21EB154-C84E-4390-87CF-271E3DF4F059}.AppStore|iPhone.Build.0 = Debug|Any CPU
+		{F21EB154-C84E-4390-87CF-271E3DF4F059}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{F21EB154-C84E-4390-87CF-271E3DF4F059}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{F21EB154-C84E-4390-87CF-271E3DF4F059}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{F21EB154-C84E-4390-87CF-271E3DF4F059}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{F21EB154-C84E-4390-87CF-271E3DF4F059}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{F21EB154-C84E-4390-87CF-271E3DF4F059}.Release|iPhone.Build.0 = Release|Any CPU
+		{F21EB154-C84E-4390-87CF-271E3DF4F059}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{F21EB154-C84E-4390-87CF-271E3DF4F059}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = WebDavViewer\WebDavViewer.csproj
+		StartupItem = Externals\WebDavClient\src\WebDavClient\WebDAVClient.csproj
 	EndGlobalSection
 EndGlobal
