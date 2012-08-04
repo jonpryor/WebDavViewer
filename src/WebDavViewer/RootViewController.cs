@@ -96,7 +96,7 @@ namespace WebDavViewer
 				get {
 					if (entries != null)
 						return entries;
-					return entries = dav.List (path).Result.ToList ();
+					return entries = dav.List (path).Result.OrderBy (e => e.Name.ToLowerInvariant ()).ToList ();
 				}
 			}
 			
