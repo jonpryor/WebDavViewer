@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 using MonoTouch.Foundation;
@@ -17,7 +18,11 @@ namespace WebDavViewer
 			get { return UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone; }
 		}
 
-		public RootViewController ()
+		WebDavClient    client;
+		string          path;
+		Task<IEnumerable<WebDavEntry>> entriesTask;
+
+		public RootViewController (WebDavClient client = null, string path = "/")
 			: base (UserInterfaceIdiomIsPhone ? "RootViewController_iPhone" : "RootViewController_iPad", null)
 		{
 			if (!UserInterfaceIdiomIsPhone) {
@@ -26,23 +31,26 @@ namespace WebDavViewer
 			}
 			
 			// Custom initialization
+			if (client == null) {
+				var servers = XDocument.Load ("Servers.xml");
+				var server  = servers.Elements ("Servers").Elements ("Server").First ();
+
+				// Perform any additional setup after loading the view, typically from a nib.
+				client = new WebDavClient {
+					Server      = (string) server.Attribute ("Uri"),
+					BasePath    = (string) server.Attribute ("BasePath"),
+					User        = (string) server.Attribute ("User"),
+					Pass        = (string) server.Attribute ("Password"),
+				};
+			}
+			this.path = path;
+			entriesTask = client.List (path);
 		}
 		
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
-
-			var servers = XDocument.Load ("Servers.xml");
-			var server  = servers.Elements ("Servers").Elements ("Server").First ();
-			
-			// Perform any additional setup after loading the view, typically from a nib.
-			var client = new WebDavClient {
-				Server      = (string) server.Attribute ("Uri"),
-				BasePath    = (string) server.Attribute ("BasePath"),
-				User        = (string) server.Attribute ("User"),
-				Pass        = (string) server.Attribute ("Password"),
-			};
-			this.TableView.Source = new DataSource (this, client, "");
+			this.TableView.Source = new DataSource (this);
 			
 			if (!UserInterfaceIdiomIsPhone)
 				this.TableView.SelectRow (NSIndexPath.FromRowSection (0, 0), false, UITableViewScrollPosition.Middle);
@@ -81,22 +89,20 @@ namespace WebDavViewer
 		class DataSource : UITableViewSource
 		{
 			RootViewController controller;
-			WebDavClient        dav;
-			string              path;
 			List<WebDavEntry>   entries;
 
-			public DataSource (RootViewController controller, WebDavClient dav, string path)
+			public DataSource (RootViewController controller)
 			{
 				this.controller = controller;
-				this.dav        = dav;
-				this.path       = path;
 			}
 
 			List<WebDavEntry> Entries {
 				get {
 					if (entries != null)
 						return entries;
-					return entries = dav.List (path).Result.OrderBy (e => e.Name.ToLowerInvariant ()).ToList ();
+					entries = controller.entriesTask.Result.OrderBy (e => e.Name.ToLowerInvariant ()).ToList ();
+					controller.entriesTask = null;
+					return entries;
 				}
 			}
 			
@@ -171,6 +177,12 @@ namespace WebDavViewer
 			
 			public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 			{
+				var e = Entries [indexPath.Row];
+				if (e.Type == WebDavEntryType.Directory) {
+					var c = new RootViewController (controller.client, e.Path);
+					controller.NavigationController.PushViewController (c, true);
+					return;
+				}
 				if (UserInterfaceIdiomIsPhone) {
 					var DetailViewController = new DetailViewController ();
 					// Pass the selected object to the new view controller.
