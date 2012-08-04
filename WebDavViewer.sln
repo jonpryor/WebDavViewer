@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDavViewer", "src\WebDavV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDAVClient", "Externals\WebDavClient\src\WebDavClient\WebDAVClient.csproj", "{F21EB154-C84E-4390-87CF-271E3DF4F059}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDavClient.iOS", "WebDavClient.iOS\WebDavClient.iOS.csproj", "{2F4458C4-D321-48DD-BB85-B00E27D1FF32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|iPhoneSimulator = Debug|iPhoneSimulator
@@ -27,6 +29,18 @@ Global
 		{17FD198B-F9CA-460F-AD1B-7C8D9A73B966}.Release|iPhone.Build.0 = Release|iPhone
 		{17FD198B-F9CA-460F-AD1B-7C8D9A73B966}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
 		{17FD198B-F9CA-460F-AD1B-7C8D9A73B966}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{2F4458C4-D321-48DD-BB85-B00E27D1FF32}.Ad-Hoc|iPhone.ActiveCfg = Debug|Any CPU
+		{2F4458C4-D321-48DD-BB85-B00E27D1FF32}.Ad-Hoc|iPhone.Build.0 = Debug|Any CPU
+		{2F4458C4-D321-48DD-BB85-B00E27D1FF32}.AppStore|iPhone.ActiveCfg = Debug|Any CPU
+		{2F4458C4-D321-48DD-BB85-B00E27D1FF32}.AppStore|iPhone.Build.0 = Debug|Any CPU
+		{2F4458C4-D321-48DD-BB85-B00E27D1FF32}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{2F4458C4-D321-48DD-BB85-B00E27D1FF32}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{2F4458C4-D321-48DD-BB85-B00E27D1FF32}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{2F4458C4-D321-48DD-BB85-B00E27D1FF32}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{2F4458C4-D321-48DD-BB85-B00E27D1FF32}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{2F4458C4-D321-48DD-BB85-B00E27D1FF32}.Release|iPhone.Build.0 = Release|Any CPU
+		{2F4458C4-D321-48DD-BB85-B00E27D1FF32}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{2F4458C4-D321-48DD-BB85-B00E27D1FF32}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{F21EB154-C84E-4390-87CF-271E3DF4F059}.Ad-Hoc|iPhone.ActiveCfg = Debug|Any CPU
 		{F21EB154-C84E-4390-87CF-271E3DF4F059}.Ad-Hoc|iPhone.Build.0 = Debug|Any CPU
 		{F21EB154-C84E-4390-87CF-271E3DF4F059}.AppStore|iPhone.ActiveCfg = Debug|Any CPU
@@ -41,6 +55,6 @@ Global
 		{F21EB154-C84E-4390-87CF-271E3DF4F059}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Externals\WebDavClient\src\WebDavClient\WebDAVClient.csproj
+		StartupItem = src\WebDavViewer\WebDavViewer.csproj
 	EndGlobalSection
 EndGlobal

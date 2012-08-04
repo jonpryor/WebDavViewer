@@ -1,8 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Xml.Linq;
 
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
+
+using Cadenza.Net;
 
 namespace WebDavViewer
 {
@@ -26,10 +31,18 @@ namespace WebDavViewer
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+
+			var servers = XDocument.Load ("Servers.xml");
+			var server  = servers.Elements ("Servers").Elements ("Server").First ();
 			
 			// Perform any additional setup after loading the view, typically from a nib.
-			
-			this.TableView.Source = new DataSource (this);
+			var client = new WebDavClient {
+				Server      = (string) server.Attribute ("Uri"),
+				BasePath    = (string) server.Attribute ("BasePath"),
+				User        = (string) server.Attribute ("User"),
+				Pass        = (string) server.Attribute ("Password"),
+			};
+			this.TableView.Source = new DataSource (this, client, "");
 			
 			if (!UserInterfaceIdiomIsPhone)
 				this.TableView.SelectRow (NSIndexPath.FromRowSection (0, 0), false, UITableViewScrollPosition.Middle);
@@ -68,10 +81,23 @@ namespace WebDavViewer
 		class DataSource : UITableViewSource
 		{
 			RootViewController controller;
+			WebDavClient        dav;
+			string              path;
+			List<WebDavEntry>   entries;
 
-			public DataSource (RootViewController controller)
+			public DataSource (RootViewController controller, WebDavClient dav, string path)
 			{
 				this.controller = controller;
+				this.dav        = dav;
+				this.path       = path;
+			}
+
+			List<WebDavEntry> Entries {
+				get {
+					if (entries != null)
+						return entries;
+					return entries = dav.List (path).Result.ToList ();
+				}
 			}
 			
 			// Customize the number of sections in the table view.
@@ -82,13 +108,13 @@ namespace WebDavViewer
 			
 			public override int RowsInSection (UITableView tableview, int section)
 			{
-				return 1;
+				return Entries.Count;
 			}
 			
 			// Customize the appearance of table view cells.
 			public override UITableViewCell GetCell (UITableView tableView, MonoTouch.Foundation.NSIndexPath indexPath)
 			{
-				string cellIdentifier = "Cell";
+				const string cellIdentifier = "Cell";
 				var cell = tableView.DequeueReusableCell (cellIdentifier);
 				if (cell == null) {
 					cell = new UITableViewCell (UITableViewCellStyle.Default, cellIdentifier);
@@ -96,9 +122,12 @@ namespace WebDavViewer
 						cell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
 					}
 				}
+
+				var e = Entries [indexPath.Row];
 				
 				// Configure the cell.
-				cell.TextLabel.Text = NSBundle.MainBundle.LocalizedString ("Detail", "Detail");
+				// cell.TextLabel.Text = NSBundle.MainBundle.LocalizedString ("Detail", "Filename");
+				cell.TextLabel.Text = e.Name;
 				return cell;
 			}
 
