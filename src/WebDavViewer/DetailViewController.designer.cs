@@ -1,3 +1,4 @@
+// WARNING
 //
 // This file has been generated automatically by MonoDevelop to store outlets and
 // actions made in the Xcode designer. If it is removed, they will be lost.
@@ -12,6 +13,9 @@ namespace WebDavViewer
 	{
 		[Outlet]
 		MonoTouch.UIKit.UILabel detailDescriptionLabel { get; set; }
+
+		[Outlet]
+		MonoTouch.UIKit.UIImageView image { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
@@ -19,7 +23,11 @@ namespace WebDavViewer
 				detailDescriptionLabel.Dispose ();
 				detailDescriptionLabel = null;
 			}
+
+			if (image != null) {
+				image.Dispose ();
+				image = null;
+			}
 		}
 	}
 }
-

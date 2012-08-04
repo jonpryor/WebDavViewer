@@ -1,9 +1,13 @@
 using System;
 using System.Drawing;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
+
+using Cadenza.Net;
 
 namespace WebDavViewer
 {
@@ -14,15 +18,16 @@ namespace WebDavViewer
 		}
 
 		UIPopoverController masterPopoverController;
-		object detailItem;
+		string detailItem;
+		WebDavClient client;
 		
-		public DetailViewController ()
+		public DetailViewController (WebDavClient client)
 			: base (UserInterfaceIdiomIsPhone ? "DetailViewController_iPhone" : "DetailViewController_iPad", null)
 		{
-			// Custom initialization
+			this.client = client;
 		}
 		
-		public void SetDetailItem (object newDetailItem)
+		public void SetDetailItem (string newDetailItem)
 		{
 			if (detailItem != newDetailItem) {
 				detailItem = newDetailItem;
@@ -38,8 +43,13 @@ namespace WebDavViewer
 		void ConfigureView ()
 		{
 			// Update the user interface for the detail item
-			if (detailItem != null)
-				this.detailDescriptionLabel.Text = detailItem.ToString ();
+			var f = Path.GetTempFileName ();
+			client.Download (detailItem, f).ContinueWith (t => {
+					if (t.IsFaulted)
+						Console.WriteLine ("Downloading image faulted! {0}", t.Exception);
+					image.Image = UIImage.FromFile (f);
+					// File.Delete (f);
+			}, TaskScheduler.FromCurrentSynchronizationContext ());
 		}
 		
 		public override void DidReceiveMemoryWarning ()

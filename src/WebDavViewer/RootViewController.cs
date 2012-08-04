@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
@@ -22,7 +21,7 @@ namespace WebDavViewer
 		string          path;
 		Task<IEnumerable<WebDavEntry>> entriesTask;
 
-		public RootViewController (WebDavClient client = null, string path = "/")
+		public RootViewController (WebDavClient client, string path = "/")
 			: base (UserInterfaceIdiomIsPhone ? "RootViewController_iPhone" : "RootViewController_iPad", null)
 		{
 			if (!UserInterfaceIdiomIsPhone) {
@@ -31,18 +30,7 @@ namespace WebDavViewer
 			}
 			
 			// Custom initialization
-			if (client == null) {
-				var servers = XDocument.Load ("Servers.xml");
-				var server  = servers.Elements ("Servers").Elements ("Server").First ();
-
-				// Perform any additional setup after loading the view, typically from a nib.
-				client = new WebDavClient {
-					Server      = (string) server.Attribute ("Uri"),
-					BasePath    = (string) server.Attribute ("BasePath"),
-					User        = (string) server.Attribute ("User"),
-					Pass        = (string) server.Attribute ("Password"),
-				};
-			}
+			this.client = client;
 			this.path = path;
 			entriesTask = client.List (path);
 		}
@@ -184,10 +172,12 @@ namespace WebDavViewer
 					return;
 				}
 				if (UserInterfaceIdiomIsPhone) {
-					var DetailViewController = new DetailViewController ();
+					var DetailViewController = new DetailViewController (controller.client);
+					DetailViewController.SetDetailItem (e.Path);
 					// Pass the selected object to the new view controller.
 					controller.NavigationController.PushViewController (DetailViewController, true);
 				} else {
+					AppDelegate.DetailViewController.SetDetailItem (e.Path);
 					// Navigation logic may go here -- for example, create and push another view controller.
 				}
 			}
