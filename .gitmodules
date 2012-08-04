@@ -1,0 +1,3 @@
+[submodule "Externals/WebDavClient"]
+	path = Externals/WebDavClient
+	url = git@github.com:jonpryor/WebDavClient.git
