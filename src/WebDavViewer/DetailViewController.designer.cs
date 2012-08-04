@@ -12,21 +12,13 @@ namespace WebDavViewer
 	partial class DetailViewController
 	{
 		[Outlet]
-		MonoTouch.UIKit.UILabel detailDescriptionLabel { get; set; }
-
-		[Outlet]
-		MonoTouch.UIKit.UIImageView image { get; set; }
+		MonoTouch.UIKit.UIScrollView DetailContents { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (detailDescriptionLabel != null) {
-				detailDescriptionLabel.Dispose ();
-				detailDescriptionLabel = null;
-			}
-
-			if (image != null) {
-				image.Dispose ();
-				image = null;
+			if (DetailContents != null) {
+				DetailContents.Dispose ();
+				DetailContents = null;
 			}
 		}
 	}

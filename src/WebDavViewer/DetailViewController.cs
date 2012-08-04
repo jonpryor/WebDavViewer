@@ -20,7 +20,8 @@ namespace WebDavViewer
 		UIPopoverController masterPopoverController;
 		string detailItem;
 		WebDavClient client;
-		
+		UIImageView image;
+
 		public DetailViewController (WebDavClient client)
 			: base (UserInterfaceIdiomIsPhone ? "DetailViewController_iPhone" : "DetailViewController_iPad", null)
 		{
@@ -43,11 +44,14 @@ namespace WebDavViewer
 		void ConfigureView ()
 		{
 			// Update the user interface for the detail item
+			if (detailItem == null)
+				return;
 			var f = Path.GetTempFileName ();
 			client.Download (detailItem, f).ContinueWith (t => {
 					if (t.IsFaulted)
 						Console.WriteLine ("Downloading image faulted! {0}", t.Exception);
 					image.Image = UIImage.FromFile (f);
+					DetailContents.ContentSize = image.Image.Size;
 					// File.Delete (f);
 			}, TaskScheduler.FromCurrentSynchronizationContext ());
 		}
@@ -65,6 +69,23 @@ namespace WebDavViewer
 			base.ViewDidLoad ();
 			
 			// Perform any additional setup after loading the view, typically from a nib.
+			DetailContents.BackgroundColor  = UIColor.UnderPageBackgroundColor;
+			DetailContents.MaximumZoomScale = 3f;
+			DetailContents.MinimumZoomScale = .1f;
+			DetailContents.PagingEnabled    = true;
+			DetailContents.AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
+			DetailContents.ContentMode      = UIViewContentMode.Center;
+			DetailContents.ViewForZoomingInScrollView = v => image;
+			DetailContents.DecelerationEnded += (object sender, EventArgs e) => {
+				Console.WriteLine ("DecelarationEnded; change the image!");
+			};
+			float imageHeight = this.View.Frame.Height - this.NavigationController.NavigationBar.Frame.Height;
+			image = new UIImageView (new RectangleF (0, 0, this.View.Frame.Width, imageHeight)) {
+				AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth,
+				ContentMode = UIViewContentMode.ScaleAspectFit,
+			};
+			DetailContents.AddSubview (image);
+
 			ConfigureView ();
 		}
 		
