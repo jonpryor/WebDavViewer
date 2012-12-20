@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Xml.Linq;
 
 using MonoTouch.Foundation;
@@ -21,7 +22,7 @@ namespace WebDavViewer
 		UISplitViewController splitViewController;
 		UIWindow window;
 
-		internal static WebDavClient    client;
+		internal static WebDavMethodBuilder  Builder;
 
 		internal static DetailViewController DetailViewController;
 		
@@ -41,22 +42,20 @@ namespace WebDavViewer
 			var server  = servers.Elements ("Servers").Elements ("Server").First ();
 			
 			// Perform any additional setup after loading the view, typically from a nib.
-			client = new WebDavClient {
-				Server      = (string) server.Attribute ("Uri"),
-				BasePath    = (string) server.Attribute ("BasePath"),
-				User        = (string) server.Attribute ("User"),
-				Pass        = (string) server.Attribute ("Password"),
+			Builder = new WebDavMethodBuilder {
+				Server              = new Uri ((string) server.Attribute ("Uri")),
+				NetworkCredential   = new NetworkCredential ((string) server.Attribute ("User"), (string) server.Attribute ("Password")),
 			};
 
 			// load the appropriate UI, depending on whether the app is running on an iPhone or iPad
 			if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone) {
-				var controller = new RootViewController (client);
+				var controller = new RootViewController (Builder);
 				navigationController = new UINavigationController (controller);
 				window.RootViewController = navigationController;
 			} else {
-				var masterViewController = new RootViewController (client);
+				var masterViewController = new RootViewController (Builder);
 				var masterNavigationController = new UINavigationController (masterViewController);
-				DetailViewController = new DetailViewController (client);
+				DetailViewController = new DetailViewController (Builder);
 				var detailNavigationController = new UINavigationController (DetailViewController);
 				
 				splitViewController = new UISplitViewController ();

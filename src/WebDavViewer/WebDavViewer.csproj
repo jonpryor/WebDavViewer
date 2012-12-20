@@ -85,6 +85,7 @@
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web.Services" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

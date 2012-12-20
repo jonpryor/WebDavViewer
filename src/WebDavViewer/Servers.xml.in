@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Servers>
   <Server
-      Uri="https://example.com"
-      BasePath="/path"
+      Uri="https://example.com/path"
       User="username"
       Password="password"
   />

@@ -19,13 +19,13 @@ namespace WebDavViewer
 
 		UIPopoverController masterPopoverController;
 		string detailItem;
-		WebDavClient client;
+		WebDavMethodBuilder builder;
 		UIImageView image;
 
-		public DetailViewController (WebDavClient client)
+		public DetailViewController (WebDavMethodBuilder builder)
 			: base (UserInterfaceIdiomIsPhone ? "DetailViewController_iPhone" : "DetailViewController_iPad", null)
 		{
-			this.client = client;
+			this.builder = builder;
 		}
 		
 		public void SetDetailItem (string newDetailItem)
@@ -47,9 +47,13 @@ namespace WebDavViewer
 			if (detailItem == null)
 				return;
 			var f = Path.GetTempFileName ();
-			client.Download (detailItem, f).ContinueWith (t => {
-					if (t.IsFaulted)
+			Stream s = File.OpenWrite (f);
+			builder.CreateDownloadMethodAsync (detailItem, s).ContinueWith (t => {
+					s.Close ();
+					if (t.IsFaulted) {
 						Console.WriteLine ("Downloading image faulted! {0}", t.Exception);
+						return;
+					}
 					image.Image = UIImage.FromFile (f);
 					DetailContents.ContentSize = image.Image.Size;
 					// File.Delete (f);

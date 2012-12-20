@@ -34,11 +34,39 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="..\Externals\WebDavClient\src\WebDavClient\WebDAVClient.cs">
-      <Link>WebDAVClient.cs</Link>
+    <Compile Include="..\Externals\WebDavClient\src\WebDavClient\Cadenza.Net\WebDavDownloadMethod.cs">
+      <Link>Cadenza.Net\WebDavDownloadMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\Externals\WebDavClient\src\WebDavClient\Cadenza.Net\WebDavMethod.cs">
+      <Link>Cadenza.Net\WebDavMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\Externals\WebDavClient\src\WebDavClient\Cadenza.Net\WebDavMethodBuilder.cs">
+      <Link>Cadenza.Net\WebDavMethodBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\Externals\WebDavClient\src\WebDavClient\Cadenza.Net\WebDavMethods.cs">
+      <Link>Cadenza.Net\WebDavMethods.cs</Link>
+    </Compile>
+    <Compile Include="..\Externals\WebDavClient\src\WebDavClient\Cadenza.Net\WebDavNames.cs">
+      <Link>Cadenza.Net\WebDavNames.cs</Link>
+    </Compile>
+    <Compile Include="..\Externals\WebDavClient\src\WebDavClient\Cadenza.Net\WebDavPropertyFindMethod.cs">
+      <Link>Cadenza.Net\WebDavPropertyFindMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\Externals\WebDavClient\src\WebDavClient\Cadenza.Net\WebDavPropertyStatus.cs">
+      <Link>Cadenza.Net\WebDavPropertyStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\Externals\WebDavClient\src\WebDavClient\Cadenza.Net\WebDavResourceType.cs">
+      <Link>Cadenza.Net\WebDavResourceType.cs</Link>
+    </Compile>
+    <Compile Include="..\Externals\WebDavClient\src\WebDavClient\Cadenza.Net\WebDavResponse.cs">
+      <Link>Cadenza.Net\WebDavResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\Externals\WebDavClient\src\WebDavClient\Cadenza.Net\XElementCoda.cs">
+      <Link>Cadenza.Net\XElementCoda.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>
