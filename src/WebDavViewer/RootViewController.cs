@@ -131,7 +131,7 @@ namespace WebDavViewer
 				const string cellIdentifier = "Cell";
 				var cell = tableView.DequeueReusableCell (cellIdentifier);
 				if (cell == null) {
-					cell = new UITableViewCell (UITableViewCellStyle.Default, cellIdentifier);
+					cell = new UITableViewCell (UITableViewCellStyle.Value1, cellIdentifier);
 					if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone) {
 						cell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
 					}
@@ -142,6 +142,7 @@ namespace WebDavViewer
 				// Configure the cell.
 				// cell.TextLabel.Text = NSBundle.MainBundle.LocalizedString ("Detail", "Filename");
 				cell.TextLabel.Text = GetEntryName (e);
+				cell.DetailTextLabel.Text = e.ContentLength == null ? "-" : e.ContentLength.ToString ();
 				return cell;
 			}
 
