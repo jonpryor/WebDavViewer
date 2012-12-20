@@ -142,7 +142,7 @@ namespace WebDavViewer
 				// Configure the cell.
 				// cell.TextLabel.Text = NSBundle.MainBundle.LocalizedString ("Detail", "Filename");
 				cell.TextLabel.Text = GetEntryName (e);
-				cell.DetailTextLabel.Text = e.ContentLength == null ? "-" : e.ContentLength.ToString ();
+				cell.DetailTextLabel.Text = e.ContentLength == null ? "\u2192" : e.ContentLength.ToString ();
 				return cell;
 			}
 
