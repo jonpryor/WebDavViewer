@@ -23,22 +23,38 @@ namespace WebDavViewer
 		string  href;
 		Task<WebDavPropertyFindMethod>      entriesTask;
 		List<WebDavResponse>                entries;
+		string                              path;
 
 		public CollectionViewController (WebDavMethodBuilder builder, string path = "")
 			: base (UserInterfaceIdiomIsPhone ? "RootViewController_iPhone" : "RootViewController_iPad", null)
 		{
+			this.path = path;
+
 			if (!UserInterfaceIdiomIsPhone) {
 				this.ClearsSelectionOnViewWillAppear = false;
 				this.ContentSizeForViewInPopover = new SizeF (320f, 600f);
 			}
+
+			NavigationItem.RightBarButtonItem = new UIBarButtonItem ("Hidden", UIBarButtonItemStyle.Bordered, (o, e) => {
+				AppDelegate.ShowHiddenFiles = !AppDelegate.ShowHiddenFiles;
+
+				entries     = null;
+				entriesTask = CreateEntriesTask ();
+				TableView.ReloadData ();
+			});
 			
 			// Custom initialization
 			this.Builder = builder;
-			entriesTask = Task<WebDavPropertyFindMethod>.Factory.StartNew (() => {
-				var c = builder.CreateFileStatusMethodAsync (path, 0);
+			entriesTask = CreateEntriesTask ();
+		}
+
+		Task<WebDavPropertyFindMethod> CreateEntriesTask ()
+		{
+			return Task<WebDavPropertyFindMethod>.Factory.StartNew (() => {
+				var c = Builder.CreateFileStatusMethodAsync (path, 0);
 				c.Wait ();
 				this.href = c.Result.GetResponses ().First ().Href;
-				return builder.CreateFileStatusMethodAsync (path).Result;
+				return Builder.CreateFileStatusMethodAsync (path).Result;
 			});
 		}
 		
@@ -85,9 +101,12 @@ namespace WebDavViewer
 			get {
 				if (entries != null)
 					return entries;
-				entries = entriesTask.Result.GetResponses ()
-					.Where (r => r.Href != href)
-					.OrderBy (r => GetEntryName (r).ToLowerInvariant ())
+				entries = (from r in entriesTask.Result.GetResponses ()
+						where r.Href != href
+						let name = GetEntryName (r).ToLowerInvariant ()
+						where AppDelegate.ShowHiddenFiles ? true : !name.StartsWith (".")
+						orderby name
+						select r)
 					.ToList ();
 				entriesTask = null;
 				return entries;

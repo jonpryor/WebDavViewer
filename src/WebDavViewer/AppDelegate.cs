@@ -26,6 +26,8 @@ namespace WebDavViewer
 
 		internal static PagingDetailViewController  PagingDetailViewController;
 
+		internal static bool                        ShowHiddenFiles;
+
 		//
 		// This method is invoked when the application has loaded and is ready to run. In this 
 		// method you should instantiate the window, load the UI into it and then make the window
@@ -57,7 +59,7 @@ namespace WebDavViewer
 				var masterNavigationController = new UINavigationController (masterViewController);
 				PagingDetailViewController     = new PagingDetailViewController (masterViewController);
 				var detailNavigationController = new UINavigationController (PagingDetailViewController);
-				
+
 				splitViewController = new UISplitViewController ();
 				splitViewController.WeakDelegate = PagingDetailViewController;
 				splitViewController.ViewControllers = new UIViewController[] {
