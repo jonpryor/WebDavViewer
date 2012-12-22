@@ -49,11 +49,11 @@ namespace WebDavViewer
 
 			// load the appropriate UI, depending on whether the app is running on an iPhone or iPad
 			if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone) {
-				var controller = new RootViewController (Builder);
+				var controller = new CollectionViewController (Builder);
 				navigationController = new UINavigationController (controller);
 				window.RootViewController = navigationController;
 			} else {
-				var masterViewController = new RootViewController (Builder);
+				var masterViewController = new CollectionViewController (Builder);
 				var masterNavigationController = new UINavigationController (masterViewController);
 				PagingDetailViewController     = new PagingDetailViewController (masterViewController);
 				var detailNavigationController = new UINavigationController (PagingDetailViewController);

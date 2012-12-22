@@ -9,7 +9,7 @@ using MonoTouch.Foundation;
 namespace WebDavViewer
 {
 	[Register ("RootViewController")]
-	partial class RootViewController
+	partial class CollectionViewController
 	{
 		void ReleaseDesignerOutlets ()
 		{

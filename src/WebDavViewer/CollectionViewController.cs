@@ -13,7 +13,7 @@ using Cadenza.Net;
 
 namespace WebDavViewer
 {
-	public partial class RootViewController : UITableViewController
+	public partial class CollectionViewController : UITableViewController
 	{
 		static bool UserInterfaceIdiomIsPhone {
 			get { return UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone; }
@@ -24,7 +24,7 @@ namespace WebDavViewer
 		Task<WebDavPropertyFindMethod>      entriesTask;
 		List<WebDavResponse>                entries;
 
-		public RootViewController (WebDavMethodBuilder builder, string path = "")
+		public CollectionViewController (WebDavMethodBuilder builder, string path = "")
 			: base (UserInterfaceIdiomIsPhone ? "RootViewController_iPhone" : "RootViewController_iPad", null)
 		{
 			if (!UserInterfaceIdiomIsPhone) {
@@ -106,9 +106,9 @@ namespace WebDavViewer
 
 		class DataSource : UITableViewSource
 		{
-			RootViewController collectionView;
+			CollectionViewController collectionView;
 
-			public DataSource (RootViewController collectionView)
+			public DataSource (CollectionViewController collectionView)
 			{
 				this.collectionView = collectionView;
 			}
@@ -187,7 +187,7 @@ namespace WebDavViewer
 			{
 				var e = collectionView.Entries [indexPath.Row];
 				if (e.ResourceType == WebDavResourceType.Collection) {
-					var c = new RootViewController (collectionView.Builder, e.Href);
+					var c = new CollectionViewController (collectionView.Builder, e.Href);
 					collectionView.NavigationController.PushViewController (c, true);
 					return;
 				}

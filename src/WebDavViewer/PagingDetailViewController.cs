@@ -20,10 +20,10 @@ namespace WebDavViewer
 		HashSet<DetailViewController>   VisiblePages    = new HashSet<DetailViewController> ();
 		HashSet<DetailViewController>   RecycledPages   = new HashSet<DetailViewController> ();
 		UIScrollView                    PagingView;
-		RootViewController              collectionView;
+		CollectionViewController              collectionView;
 		int?                            startIndex;
 
-		public PagingDetailViewController (RootViewController collectionView, int? startIndex = null)
+		public PagingDetailViewController (CollectionViewController collectionView, int? startIndex = null)
 			: base (UserInterfaceIdiomIsPhone ? "PagingDetailViewController_iPhone" : "PagingDetailViewController_iPad", null)
 		{
 			this.collectionView = collectionView;
@@ -91,7 +91,7 @@ namespace WebDavViewer
 			}
 		}
 		
-		public void SetCurrentPageIndex (RootViewController collectionView, int index)
+		public void SetCurrentPageIndex (CollectionViewController collectionView, int index)
 		{
 			if (!object.ReferenceEquals (this.collectionView, collectionView)) {
 				this.collectionView = collectionView;
