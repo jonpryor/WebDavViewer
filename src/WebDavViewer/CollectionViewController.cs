@@ -42,7 +42,8 @@ namespace WebDavViewer
 				entriesTask = CreateEntriesTask ();
 				TableView.ReloadData ();
 			});
-			
+			NavigationItem.Title    = GetCollectionEntryName (path);
+
 			// Custom initialization
 			this.Builder = builder;
 			entriesTask = CreateEntriesTask ();
@@ -115,11 +116,22 @@ namespace WebDavViewer
 		
 		static string GetEntryName (WebDavResponse r)
 		{
-			string name = r.Href;
-			if (r.ResourceType == WebDavResourceType.Collection || name.EndsWith ("/"))
-				name = Path.GetFileName (Path.GetDirectoryName (name));
-			else
-				name = Path.GetFileName (name);
+			return r.ResourceType == WebDavResourceType.Collection || r.Href.EndsWith ("/")
+				? GetCollectionEntryName (r.Href)
+				: GetFileEntryName (r.Href);
+		}
+
+		static string GetCollectionEntryName (string collectionName)
+		{
+			if (string.IsNullOrEmpty (collectionName))
+				return "/";
+			var name = Path.GetFileName (Path.GetDirectoryName (collectionName));
+			return HttpUtility.UrlDecode (name);
+		}
+
+		static string GetFileEntryName (string fileName)
+		{
+			var name = Path.GetFileName (fileName);
 			return HttpUtility.UrlDecode (name);
 		}
 
@@ -208,6 +220,7 @@ namespace WebDavViewer
 				if (e.ResourceType == WebDavResourceType.Collection) {
 					var c = new CollectionViewController (collectionView.Builder, e.Href);
 					collectionView.NavigationController.PushViewController (c, true);
+					c.NavigationController.NavigationBar.BackItem.Title = GetCollectionEntryName (collectionView.path);
 					return;
 				}
 				if (UserInterfaceIdiomIsPhone) {
