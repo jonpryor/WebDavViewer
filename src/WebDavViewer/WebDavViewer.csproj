@@ -101,12 +101,18 @@
     <Compile Include="DetailViewController.designer.cs">
       <DependentUpon>DetailViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="PagingDetailViewController.cs" />
+    <Compile Include="PagingDetailViewController.designer.cs">
+      <DependentUpon>PagingDetailViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="RootViewController_iPhone.xib" />
     <InterfaceDefinition Include="RootViewController_iPad.xib" />
     <InterfaceDefinition Include="DetailViewController_iPhone.xib" />
     <InterfaceDefinition Include="DetailViewController_iPad.xib" />
+    <InterfaceDefinition Include="PagingDetailViewController_iPad.xib" />
+    <InterfaceDefinition Include="PagingDetailViewController_iPhone.xib" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

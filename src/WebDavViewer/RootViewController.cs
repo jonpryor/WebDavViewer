@@ -19,9 +19,10 @@ namespace WebDavViewer
 			get { return UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone; }
 		}
 
-		WebDavMethodBuilder builder;
+		public readonly WebDavMethodBuilder Builder;
 		string  href;
-		Task<WebDavPropertyFindMethod> entriesTask;
+		Task<WebDavPropertyFindMethod>      entriesTask;
+		List<WebDavResponse>                entries;
 
 		public RootViewController (WebDavMethodBuilder builder, string path = "")
 			: base (UserInterfaceIdiomIsPhone ? "RootViewController_iPhone" : "RootViewController_iPad", null)
@@ -32,25 +33,24 @@ namespace WebDavViewer
 			}
 			
 			// Custom initialization
-			this.builder = builder;
+			this.Builder = builder;
 			entriesTask = Task<WebDavPropertyFindMethod>.Factory.StartNew (() => {
 				var c = builder.CreateFileStatusMethodAsync (path, 0);
 				c.Wait ();
 				this.href = c.Result.GetResponses ().First ().Href;
 				return builder.CreateFileStatusMethodAsync (path).Result;
 			});
-			entriesTask = builder.CreateFileStatusMethodAsync (path);
 		}
 		
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
 			this.TableView.Source = new DataSource (this);
-			
+
 			if (!UserInterfaceIdiomIsPhone)
 				this.TableView.SelectRow (NSIndexPath.FromRowSection (0, 0), false, UITableViewScrollPosition.Middle);
 		}
-		
+
 		public override bool ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation toInterfaceOrientation)
 		{
 			// Return true for supported orientations
@@ -80,40 +80,39 @@ namespace WebDavViewer
 			
 			ReleaseDesignerOutlets ();
 		}
+
+		internal List<WebDavResponse> Entries {
+			get {
+				if (entries != null)
+					return entries;
+				entries = entriesTask.Result.GetResponses ()
+					.Where (r => r.Href != href)
+					.OrderBy (r => GetEntryName (r).ToLowerInvariant ())
+					.ToList ();
+				entriesTask = null;
+				return entries;
+			}
+		}
 		
+		static string GetEntryName (WebDavResponse r)
+		{
+			string name = r.Href;
+			if (r.ResourceType == WebDavResourceType.Collection || name.EndsWith ("/"))
+				name = Path.GetFileName (Path.GetDirectoryName (name));
+			else
+				name = Path.GetFileName (name);
+			return HttpUtility.UrlDecode (name);
+		}
+
 		class DataSource : UITableViewSource
 		{
-			RootViewController controller;
-			List<WebDavResponse>   entries;
+			RootViewController collectionView;
 
-			public DataSource (RootViewController controller)
+			public DataSource (RootViewController collectionView)
 			{
-				this.controller = controller;
+				this.collectionView = collectionView;
 			}
 
-			List<WebDavResponse> Entries {
-				get {
-					if (entries != null)
-						return entries;
-					entries = controller.entriesTask.Result.GetResponses ()
-						.Where (r => r.Href != controller.href)
-						.OrderBy (r => GetEntryName (r).ToLowerInvariant ())
-						.ToList ();
-					controller.entriesTask = null;
-					return entries;
-				}
-			}
-
-			static string GetEntryName (WebDavResponse r)
-			{
-				string name = r.Href;
-				if (r.ResourceType == WebDavResourceType.Collection || name.EndsWith ("/"))
-					name = Path.GetFileName (Path.GetDirectoryName (name));
-				else
-					name = Path.GetFileName (name);
-				return HttpUtility.UrlDecode (name);
-			}
-			
 			// Customize the number of sections in the table view.
 			public override int NumberOfSections (UITableView tableView)
 			{
@@ -122,7 +121,7 @@ namespace WebDavViewer
 			
 			public override int RowsInSection (UITableView tableview, int section)
 			{
-				return Entries.Count;
+				return collectionView.Entries.Count;
 			}
 			
 			// Customize the appearance of table view cells.
@@ -137,7 +136,7 @@ namespace WebDavViewer
 					}
 				}
 
-				var e = Entries [indexPath.Row];
+				var e = collectionView.Entries [indexPath.Row];
 				
 				// Configure the cell.
 				// cell.TextLabel.Text = NSBundle.MainBundle.LocalizedString ("Detail", "Filename");
@@ -186,19 +185,18 @@ namespace WebDavViewer
 			
 			public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 			{
-				var e = Entries [indexPath.Row];
+				var e = collectionView.Entries [indexPath.Row];
 				if (e.ResourceType == WebDavResourceType.Collection) {
-					var c = new RootViewController (controller.builder, e.Href);
-					controller.NavigationController.PushViewController (c, true);
+					var c = new RootViewController (collectionView.Builder, e.Href);
+					collectionView.NavigationController.PushViewController (c, true);
 					return;
 				}
 				if (UserInterfaceIdiomIsPhone) {
-					var DetailViewController = new DetailViewController (controller.builder);
-					DetailViewController.SetDetailItem (e.Href);
+					var details = new PagingDetailViewController (collectionView, indexPath.Row);
 					// Pass the selected object to the new view controller.
-					controller.NavigationController.PushViewController (DetailViewController, true);
+					collectionView.NavigationController.PushViewController (details, true);
 				} else {
-					AppDelegate.DetailViewController.SetDetailItem (e.Href);
+					AppDelegate.PagingDetailViewController.SetCurrentPageIndex (collectionView, indexPath.Row);
 					// Navigation logic may go here -- for example, create and push another view controller.
 				}
 			}

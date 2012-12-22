@@ -27,18 +27,20 @@ namespace WebDavViewer
 		{
 			this.builder = builder;
 		}
-		
-		public void SetDetailItem (string newDetailItem)
-		{
-			if (detailItem != newDetailItem) {
-				detailItem = newDetailItem;
+
+		public string Filename {
+			get {return detailItem;}
+			set {
+				if (detailItem != value) {
+					detailItem = value;
+					
+					// Update the view
+					ConfigureView ();
+				}
 				
-				// Update the view
-				ConfigureView ();
+				if (this.masterPopoverController != null)
+					this.masterPopoverController.Dismiss (true);
 			}
-			
-			if (this.masterPopoverController != null)
-				this.masterPopoverController.Dismiss (true);
 		}
 		
 		void ConfigureView ()
@@ -80,10 +82,7 @@ namespace WebDavViewer
 			DetailContents.AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
 			DetailContents.ContentMode      = UIViewContentMode.Center;
 			DetailContents.ViewForZoomingInScrollView = v => image;
-			DetailContents.DecelerationEnded += (object sender, EventArgs e) => {
-				Console.WriteLine ("DecelarationEnded; change the image!");
-			};
-			float imageHeight = this.View.Frame.Height - this.NavigationController.NavigationBar.Frame.Height;
+			float imageHeight = this.View.Frame.Height;
 			image = new UIImageView (new RectangleF (0, 0, this.View.Frame.Width, imageHeight)) {
 				AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth,
 				ContentMode = UIViewContentMode.ScaleAspectFit,

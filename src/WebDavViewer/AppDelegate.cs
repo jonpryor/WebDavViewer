@@ -24,8 +24,8 @@ namespace WebDavViewer
 
 		internal static WebDavMethodBuilder  Builder;
 
-		internal static DetailViewController DetailViewController;
-		
+		internal static PagingDetailViewController  PagingDetailViewController;
+
 		//
 		// This method is invoked when the application has loaded and is ready to run. In this 
 		// method you should instantiate the window, load the UI into it and then make the window
@@ -55,11 +55,11 @@ namespace WebDavViewer
 			} else {
 				var masterViewController = new RootViewController (Builder);
 				var masterNavigationController = new UINavigationController (masterViewController);
-				DetailViewController = new DetailViewController (Builder);
-				var detailNavigationController = new UINavigationController (DetailViewController);
+				PagingDetailViewController     = new PagingDetailViewController (masterViewController);
+				var detailNavigationController = new UINavigationController (PagingDetailViewController);
 				
 				splitViewController = new UISplitViewController ();
-				splitViewController.WeakDelegate = DetailViewController;
+				splitViewController.WeakDelegate = PagingDetailViewController;
 				splitViewController.ViewControllers = new UIViewController[] {
 					masterNavigationController,
 					detailNavigationController
